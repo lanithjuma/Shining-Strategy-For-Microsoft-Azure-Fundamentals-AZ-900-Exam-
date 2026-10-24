@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AZ-900 Prep Hub (Unofficial)</title>
+<style>
+:root{--bg:#f6f7fb;--card:#fff;--tx:#14181f;--mut:#5b6472;--ac:#0f6cbd;--ok:#1a8f4c;--bad:#c62f3a;--bd:#dde1ea;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10141b;--card:#1a202b;--tx:#e8ecf3;--mut:#9aa5b5;--ac:#5aa9f0;--ok:#4cc57e;--bad:#f0707a;--bd:#2c3544;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#10141b;--card:#1a202b;--tx:#e8ecf3;--mut:#9aa5b5;--ac:#5aa9f0;--ok:#4cc57e;--bad:#f0707a;--bd:#2c3544;color-scheme:dark}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:760px;margin:0 auto;padding:16px}
+h1{font-size:1.4rem;margin:8px 0 2px}h2{font-size:1.1rem;margin:0 0 8px}
+.sub{color:var(--mut);font-size:.85rem;margin-bottom:12px}
+nav{display:flex;gap:6px;overflow-x:auto;margin-bottom:14px}
+nav button{flex:none}
+button,select,input{font:inherit;color:var(--tx)}
+button{background:var(--card);border:1px solid var(--bd);padding:8px 14px;border-radius:10px;cursor:pointer}
+button.on,button.pri{background:var(--ac);color:#fff;border-color:var(--ac)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px;margin-bottom:12px}
+.opt{display:block;width:100%;text-align:left;margin:6px 0}
+.opt.ok{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 15%,var(--card))}
+.opt.bad{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 15%,var(--card))}
+.bar{height:10px;background:var(--bd);border-radius:6px;overflow:hidden}.bar i{display:block;height:100%;background:var(--ac)}
+.row{display:flex;justify-content:space-between;gap:8px;font-size:.9rem;margin:10px 0 4px}
+.big{font-size:2rem;font-weight:700}.mut{color:var(--mut)}
+.fc{min-height:150px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:1.15rem;cursor:pointer}
+input,select{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:8px 10px;width:100%}
+label{display:block;margin:10px 0 4px;font-size:.9rem}
+.fb{margin-top:10px;padding:10px;border-radius:10px;background:var(--bg)}
+</style></head><body><main>
+<h1>☁️ AZ-900 Prep Hub</h1>
+<div class="sub">Unofficial study tool. Original questions based on the public AZ-900 skills outline on Microsoft Learn. Not affiliated with Microsoft.</div>
+<nav id="nav"></nav><div id="v"></div>
+</main>
+<script>
+const T=["Cloud Concepts","Azure Architecture","Compute & Networking","Storage","Identity & Security","Cost & Governance"];
+const Q=[
+[0,"A company rents virtual machines and manages the OS itself. Which service model is this?",["SaaS","PaaS","IaaS","FaaS"],2,"With IaaS the provider supplies hardware and virtualisation; you manage the OS, runtime and apps. PaaS manages the OS for you, and SaaS delivers a finished app."],
+[0,"A shop’s website gets 10× traffic during a sale, and resources shrink back afterwards. This is called…",["Elasticity","Fault tolerance","Geo-distribution","Governance"],0,"Elasticity is automatically adding and removing resources as demand changes. Scalability is the broader ability to grow."],
+[0,"Which cloud model keeps sensitive systems on-premises and uses public cloud for the rest?",["Public","Private","Hybrid","Community"],2,"Hybrid cloud combines on-premises (or private) resources with public cloud."],
+[1,"What is a logical container that holds related Azure resources for one project?",["Subscription","Resource group","Region pair","Management group"],1,"A resource group holds related resources so you can deploy, manage and delete them together. Subscriptions sit above them."],
+[1,"Which structure sits ABOVE subscriptions in the Azure hierarchy?",["Resource group","Availability zone","Management group","Resource"],2,"Management groups organise multiple subscriptions so policies and access can apply to all of them."],
+[1,"Availability zones protect against…",["A whole region going offline","Failure of a single datacenter within a region","Billing errors","Slow DNS"],1,"Zones are physically separate datacenters inside a region, so one datacenter failing does not take your app down."],
+[2,"Which service lets you run code in response to events without managing servers?",["Azure Functions","Virtual Machines","Azure Bastion","ExpressRoute"],0,"Azure Functions is serverless compute: event-triggered code, billed by execution."],
+[2,"What provides a private, dedicated connection from on-premises to Azure that does not use the public internet?",["VPN Gateway","ExpressRoute","Azure DNS","Load Balancer"],1,"ExpressRoute uses a private connection via a provider. A VPN Gateway encrypts traffic but still travels over the internet."],
+[2,"What isolates your resources in a private network inside Azure?",["Virtual network (VNet)","Blob container","Azure Monitor","Resource lock"],0,"A VNet is your private network in Azure, where resources communicate securely."],
+[3,"Which storage type suits large unstructured data such as images and videos?",["Azure Files","Blob storage","Queue storage","Table storage"],1,"Blob storage is object storage for unstructured data. Azure Files offers SMB file shares."],
+[3,"Which redundancy option copies data to a secondary region?",["LRS","ZRS","GRS","None, it is automatic"],2,"GRS replicates to a paired region. LRS stays in one datacenter and ZRS spans zones in one region."],
+[3,"Which tier is cheapest for data you rarely access and can wait hours to retrieve?",["Hot","Cool","Archive","Premium"],2,"Archive has the lowest storage cost but the highest retrieval cost and delay."],
+[4,"Microsoft’s cloud identity service is…",["Microsoft Entra ID","Azure Policy","Azure Advisor","Key Vault"],0,"Microsoft Entra ID (formerly Azure AD) handles identities and authentication."],
+[4,"Requiring a password plus a phone prompt is an example of…",["Single sign-on","Multifactor authentication","Role-based access","Encryption at rest"],1,"MFA requires two or more proofs of identity, greatly reducing account takeover risk."],
+[4,"The “defense in depth” idea means…",["One strong firewall is enough","Using multiple layers of security","Avoiding the cloud","Only encrypting data"],1,"Defense in depth layers physical, identity, perimeter, network, compute, application and data protections."],
+[5,"Which tool estimates the monthly cost of a planned Azure setup?",["Pricing calculator","Service Health","Cloud Shell","Blueprints"],0,"The Pricing Calculator estimates costs before deployment. Cost Management tracks actual spend."],
+[5,"Which feature enforces rules such as “only allow VMs in approved regions”?",["Azure Policy","Resource lock","Azure Monitor","Tags"],0,"Azure Policy evaluates and enforces rules on resources. Locks prevent deletion or change."],
+[5,"What prevents accidental deletion of a critical resource?",["Tags","Resource lock","Cost alert","Reservation"],1,"A CanNotDelete lock blocks deletion even for users who otherwise have permission."]];
+const G=[
+["IaaS / PaaS / SaaS","Three service models: you manage most (IaaS), only your app and data (PaaS), or just use the software (SaaS).","Renting an empty stall in a market (IaaS), a fitted kiosk (PaaS), or buying from a supermarket (SaaS).",0],
+["Elasticity","Resources automatically grow and shrink with demand.","A matatu fleet adding vehicles at rush hour and sending them home at midday.",0],
+["Pay-as-you-go","You pay only for what you use, with no big upfront hardware cost (CapEx becomes OpEx).","Buying airtime bundles as needed instead of building your own phone mast.",0],
+["Region","A geographic area containing one or more datacenters.","Like a bank with branches in different towns, so customers use the nearest one.",1],
+["Availability zone","Separate datacenters within a region, with independent power and cooling.","Two generators in different buildings: if one fails the lights stay on.",1],
+["Resource group","A container for related resources managed as one unit.","A kikapu (basket) holding everything for one project so you can carry or discard it together.",1],
+["Virtual machine","An emulated computer you control, running in Azure.","Renting a whole computer from a cyber café owner who handles the building.",2],
+["Azure Functions","Serverless code that runs when triggered and bills per execution.","A boda boda you call only when you have a delivery, and you pay per trip.",2],
+["Blob storage","Object storage for unstructured data, with Hot, Cool and Archive tiers.","A warehouse: hot shelf by the door, cool shelf inside, archive in the back store.",3],
+["Entra ID","Cloud identity and access service handling sign-in.","The national ID check at the gate before you enter any office.",4],
+["RBAC","Role-based access control grants permissions by role and scope.","A school key system: teachers open classrooms, only the principal opens the safe.",4],
+["Azure Policy","Rules that enforce standards across resources.","County by-laws that every new shop must follow.",5],
+["Resource lock","Prevents accidental delete or modify of resources.","A padlock on the cash box even the shopkeeper must unlock deliberately.",5]];
+let S={};try{S=JSON.parse(localStorage.getItem("az900")||"{}")}catch(e){}
+S.q=S.q||{};S.box=S.box||{};S.plan=S.plan||{};
+const save=()=>{try{localStorage.setItem("az900",JSON.stringify(S))}catch(e){}};
+const $=s=>document.querySelector(s),V=$("#v");
+const tabs=["Dashboard","Quiz","Flashcards","Planner","Study Buddy"];let tab="Dashboard";
+function nav(){$("#nav").innerHTML=tabs.map(t=>`<button class="${t==tab?"on":""}" onclick="go('${t}')">${t}</button>`).join("")}
+function go(t){tab=t;nav();({Dashboard:dash,Quiz:quiz,Flashcards:flash,Planner:planner,"Study Buddy":buddy})[t]()}
+const pct=i=>{const r=S.q[i];return r&&r.t?Math.round(100*r.c/r.t):null};
+function dash(){let tot=0,cor=0;T.forEach((_,i)=>{const r=S.q[i];if(r){tot+=r.t;cor+=r.c}});
+const o=tot?Math.round(100*cor/tot):0;const ready=tot>=12&&o>=80&&T.every((_,i)=>(pct(i)??0)>=60);
+V.innerHTML=`<div class="card"><h2>Readiness</h2><div class="big">${o}%</div><div class="mut">${tot} answers recorded</div>
+<p>${!tot?"Take a quiz to start tracking.":ready?"✅ You look ready. Aim for consistent 80%+ on timed full practice tests too.":"🚧 Not ready yet. Aim for 80% overall and at least 60% in every topic."}</p></div>
+<div class="card"><h2>By topic</h2>${T.map((n,i)=>{const p=pct(i);return `<div class="row"><span>${n}</span><span>${p==null?"–":p+"%"}</span></div><div class="bar"><i style="width:${p||0}%"></i></div>`}).join("")}</div>
+<button onclick="if(confirm('Reset all progress?')){S={};save();location.reload()}">Reset progress</button>`}
+let qs=[],qi=0,ans=null,qt=null;
+function quiz(){if(qt===null){V.innerHTML=`<div class="card"><h2>Pick a topic</h2>${T.map((n,i)=>`<button class="opt" onclick="start(${i})">${n}</button>`).join("")}<button class="opt pri" onclick="start(-1)">All topics (mixed)</button></div>`;return}
+if(qi>=qs.length){V.innerHTML=`<div class="card"><h2>Done 🎉</h2><p>Score this round: ${qs.sc}/${qs.length}</p><button class="pri" onclick="qt=null;quiz()">Another round</button> <button onclick="go('Dashboard')">Dashboard</button></div>`;return}
+const q=qs[qi];V.innerHTML=`<div class="card"><div class="mut">${T[q[0]]} · ${qi+1}/${qs.length}</div><h2>${q[1]}</h2>${q[2].map((o,i)=>`<button class="opt ${ans!==null?(i==q[3]?"ok":i==ans?"bad":""):""}" ${ans!==null?"disabled":""} onclick="pick(${i})">${o}</button>`).join("")}
+${ans!==null?`<div class="fb"><b>${ans==q[3]?"Correct ✅":"Not quite ❌"}</b><br>${q[4]}</div><p><button class="pri" onclick="qi++;ans=null;quiz()">Next</button></p>`:""}</div>`}
+function start(t){qt=t;qs=Q.filter(q=>t<0||q[0]==t).sort(()=>Math.random()-.5);qs.sc=0;qi=0;ans=null;quiz()}
+function pick(i){const q=qs[qi];ans=i;const r=S.q[q[0]]=S.q[q[0]]||{c:0,t:0};r.t++;if(i==q[3]){r.c++;qs.sc++}save();quiz()}
+let fi=null,show=false;
+function flash(){const due=G.map((g,i)=>i).filter(i=>(S.box[i]||1)==Math.min(...G.map((_,j)=>S.box[j]||1)));
+if(fi===null||!due.includes(fi))fi=due[Math.floor(Math.random()*due.length)];const g=G[fi];
+V.innerHTML=`<div class="card fc" onclick="show=!show;flash()">${show?`<div><b>${g[1]}</b></div>`:`<b>${g[0]}</b>`}</div><div class="mut" style="text-align:center">Tap card to flip · Box ${S.box[fi]||1} of 3</div>
+${show?`<p style="text-align:center"><button onclick="rate(0)">Missed it</button> <button class="pri" onclick="rate(1)">Got it</button></p>`:""}
+<div class="card"><b>Mastered:</b> ${G.filter((_,i)=>(S.box[i]||1)==3).length}/${G.length}. Missed cards return to box 1 and appear first.</div>`}
+function rate(ok){S.box[fi]=ok?Math.min(3,(S.box[fi]||1)+1):1;save();fi=null;show=false;flash()}
+function planner(){const p=S.plan;V.innerHTML=`<div class="card"><h2>Study planner</h2><label>Exam date</label><input type="date" id="d" value="${p.d||""}"><label>Hours per day</label><input type="number" id="h" min="0.5" step="0.5" value="${p.h||1}">
+<p><button class="pri" onclick="mk()">Build my plan</button></p><div id="out"></div></div>`;if(p.d)mk()}
+function mk(){const d=$("#d").value,h=+$("#h").value;if(!d||!(h>0)){$("#out").innerHTML="Enter a date and hours.";return}
+S.plan={d,h};save();const days=Math.ceil((new Date(d)-new Date(new Date().toDateString()))/864e5);
+if(days<1){$("#out").innerHTML="Pick a future date.";return}
+const total=days*h,w=T.map((_,i)=>100-(pct(i)??40)+10),sw=w.reduce((a,b)=>a+b),rev=Math.min(total*.2,days);
+const learn=total-rev;
+$("#out").innerHTML=`<p><b>${days}</b> days · <b>${total.toFixed(1)}</b> study hours. Weak topics get more time (unattempted topics count as weak).</p>`+
+T.map((n,i)=>{const hrs=learn*w[i]/sw;return `<div class="row"><span>${n}</span><span>${hrs.toFixed(1)} h</span></div><div class="bar"><i style="width:${100*w[i]/Math.max(...w)}%"></i></div>`}).join("")+
+`<p>Reserve about ${rev.toFixed(1)} h for flashcards and timed practice. In the last 2 days, review only wrong answers. Re-run this planner after each quiz to update.</p>`}
+function buddy(){V.innerHTML=`<div class="card"><h2>Study Buddy</h2><div class="mut">Type a term or tap one. Answers use everyday African examples.</div><label>Ask about a term</label><input id="b" placeholder="e.g. elasticity" oninput="ask()"><p>${G.map((g,i)=>`<button onclick="$('#b').value='${g[0].split(" ")[0]}';ask()">${g[0]}</button>`).join(" ")}</p><div id="a"></div></div>`}
+function ask(){const t=$("#b").value.toLowerCase().trim();const m=G.filter(g=>t&&(g[0].toLowerCase().includes(t)||g[1].toLowerCase().includes(t)));
+$("#a").innerHTML=m.length?m.map(g=>`<div class="fb"><b>${g[0]}</b><br>${g[1]}<br><i>🌍 ${g[2]}</i></div>`).join(""):(t?"No match yet. Try a service name from the flashcards.":"")}
+go("Dashboard");
+</script></body></html>
